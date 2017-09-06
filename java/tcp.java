@@ -6,9 +6,35 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
  
-public class TcpServerTest {
+public class tcp {
     public static void main(String[] args) {
-        ServerSocket serverSocket = null;
+
+    	String str = new String(dec); //우린 
+
+		String[] charSet = {"utf-8", "euc-kr", "ksc5601", "iso-8859-1", "x-windows-949"};
+
+
+
+		for(int i=0; i<charSet.length; i++){
+
+			for(int j=0; j<charSet.length; j++){
+
+				try{
+
+					Log.d(TAG, charSet[i]+":"+charSet[j] +"="+ new String(str.getBytes[charSet[i], charSet[j]);
+
+				}catch(Exception e){
+
+				//Exception
+
+				}
+
+			}
+
+		}
+
+
+       /* ServerSocket serverSocket = null;
          
         try {
             // 서버소켓을 생성하고 5000번 포트와 결합(bind) 시킨다.
@@ -40,11 +66,6 @@ public class TcpServerTest {
             } catch (IOException e) {
                 e.printStackTrace();
             } // try - catch
-        } // while
+        } // while*/
     } // main
-     
-    static String getTime() {
-        SimpleDateFormat f = new SimpleDateFormat("[hh:mm:ss]");
-        return f.format(new Date());
-    } // getTime
 } // TcpServerTest
