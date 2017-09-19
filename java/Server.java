@@ -17,7 +17,6 @@ public class Server {
             Socket socket = null;
             System.out.println("대기중....");
             while ((socket = server.accept()) != null) {
-                
                 System.out.println(socket.getInetAddress() + " 로부터 연결요청이 들어왔습니다.");
                 new ServerThread(socket).start();
             }
@@ -41,17 +40,15 @@ public class Server {
                 while( (input = conToClient.read())!=null){
                     // System.out.println(input);
                     //conToClient.write(input);
-                    byte[] buf = input.getBytes("UTF-8"); 
-                    String input_utf = new String(buf,"UTF-8");
-                    System.out.println("message: " + input_utf);
+                    System.out.println("message: " + input);
 
-                if (input_utf.equals("김경관")){
+                if (input.equals("김경관")){
                     System.out.println("맞음");
                 }
                 else
                     System.out.println("틀림");
 
-                    sendToAll(input_utf+"\n");
+                    sendToAll(input+"\n");
                 }
             } catch (Exception e) {
             }

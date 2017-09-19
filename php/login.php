@@ -3,41 +3,35 @@
 	//session_start();
 	include('config.php');
 
-	$id = $_GET['id'];
-	$pwd = $_GET['pwd'];
-	$auto = isset($_GET['auto']) ? $_GET['auto']: "";
+	
+
+
+	$id = $_POST['id'];
+	$pwd = $_POST['pwd'];
+	$auto = isset($_POST['auto']) ? $_POST['auto']: "";
 	$query = "select * from user_list where id = '$id'";	
 	$result = mysqli_query($connect,$query)or die ("mysql 입력 실패");
 	$data = mysqli_fetch_array($result);
-	$token = rand(1000, 9999);
+	$token = rand(10000000, 99999999);
 	//echo $data[pwd];
 
 	if ($pwd != $data['pwd'] || $data['pwd'] == "" ){
 		$user_table = array();
-		$test = array('iden' => "wrong");
+		$test = array('iden' => "wrong" , 'id' => "wrong" , 'token' => "wrong" );
 		array_push($user_table,$test);		
-		$test = array('id' => "wrong");
-		array_push($user_table,$test);
-		$test = array('token' => "wrong");
-		array_push($user_table,$test);
 		$json = json_encode($user_table);
 		echo $json;
 	}
 	else if ($pwd == $data['pwd']){
 		$user_info = array();
 		$server_iden = $data['iden'];
-
+		$photo_uri = $data['photo_uri'];
 		session_start();
 		$_SESSION['id'] = $id;
 		$_SESSION['token'] = $token;
 		$user_table = array();
 
-
-		$test_iden = array('iden' => $data['iden']);
-		array_push($user_table, $test_iden);
-		$test = array('id' => $data['id']);
-		array_push($user_table, $test);
-		$test = array('token' => "$token"); 
+		$test = array('iden' => $data['iden'], 'id' => $data['id'] , 'token' => $token, 'photo_uri' => $photo_uri);
 		array_push($user_table, $test);
 		
 		$json = json_encode($user_table);
