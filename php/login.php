@@ -17,7 +17,7 @@
 
 	if ($pwd != $data['pwd'] || $data['pwd'] == "" ){
 		$user_table = array();
-		$test = array('iden' => "wrong" , 'id' => "wrong" , 'token' => "wrong" );
+		$test = array('iden' => "wrong" , 'id' => "wrong" , 'token' => "wrong" ,'photo_uri' => "wrong");
 		array_push($user_table,$test);		
 		$json = json_encode($user_table);
 		echo $json;
@@ -27,6 +27,7 @@
 		$server_iden = $data['iden'];
 		$photo_uri = $data['photo_uri'];
 		session_start();
+		session_cache_expire(14400);
 		$_SESSION['id'] = $id;
 		$_SESSION['token'] = $token;
 		$user_table = array();
