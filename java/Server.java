@@ -53,7 +53,7 @@ public class Server {
                 String room_num = "";
                 String user_name = "";
                 String tcp_type = "";
-
+                String ready_check = "";
                 
                 // String input = new String(buf, "UTF-8");
                 while( (input = conToClient.read())!=null){
@@ -67,24 +67,23 @@ public class Server {
                         System.out.println( user_name + "님이 입장하였습니다.");
                         client_info = new Client_info(socket,room_num,user_name,"wait");
                         client_list.add(client_info);
-                            
-                        /*if (info ==0 ){
-                            room_num = input;
-                            info = 1;
-                        }
-                        else if (info == 1){
-                            user_name = input;
-                            
-                            // String asdf = client_list.get(0).getRoomNum();
-                            System.out.println( room_num + "번방을 입장했다.");*/
+                        
+
+                        String user_list = check_user_list(room_num);
+                        System.out.println(user_list);
+                        sendToAll(user_list+ "\n",room_num);
+                        
                         ment = false;
-                        // }
                     }
                     
 
                     else {
                         if (input.equals("fin!@#!@#》")){
                             exit_room(user_name);
+                            String user_list = check_user_list(room_num);
+                            System.out.println(user_list);
+                            
+                            sendToAll(user_list+ "\n",room_num);
                             break;
                         }
                         System.out.println(input);
@@ -108,11 +107,19 @@ public class Server {
                             sendToAll("《1《"+user_name+ "\n",room_num);
                         }
                         else if (tcp_type.equals("2")){
-                            user_ready(user_name);
+                            System.out.println(user_name);
+                            idx = user_name.indexOf("》");
+                            ready_check = user_name.substring(idx+1);
+                            user_name = user_name.substring(0,idx);
+                            System.out.print(user_name+ " | ");
+                            System.out.println(ready_check+ "입니다");
+                            
+                            user_ready(user_name,ready_check);
+                            
                             String user_list = check_user_list(room_num);
                             System.out.println(user_list);
                             
-                            sendToAll("《2"+user_list+ "\n",room_num);
+                            sendToAll(user_list+ "\n",room_num);
                         }
                         else if (tcp_type.equals("3")){
                             System.out.println("ㅁㄴㅇㄹ");
@@ -135,16 +142,18 @@ public class Server {
             }
         }
 
-        public void user_ready(String user_name) {
+        public void user_ready(String user_name,String ready) {
             for (int i =0 ;i < client_list.size() ; i ++) {
-                if (user_name.equals(client_info.getUserName())){
-                    if (client_list.get(i).getReadycheck().equals("wait")) {
+                System.out.println(user_name + "||" + client_list.get(i).getUserName());
+                if (user_name.equals(client_list.get(i).getUserName())){
+                    if (ready.equals("wait")) {
                         client_list.get(i).setReadycheck("ready");
+                        System.out.println("ready!");
                     }
-                    else
+                    else {
                         client_list.get(i).setReadycheck("wait");
-                
-                    return;
+                        System.out.println("wait!");
+                    }
                 }
             }
         }
@@ -164,14 +173,44 @@ public class Server {
 
         public String check_user_list(String room_num){
             String user_list_json = "";
+            int check = 0;
+            boolean start = true;
+            System.out.println("qqwqwwqwqwqwqw" + client_list.size());
+            if (client_list.size() == 2){
+                  System.out.println("qqwqwwqwqwqwqw" + client_list.size() + client_list.get(1).getUserName()); 
+            }
             for (int i = 0 ; i < client_list.size() ; i ++ ){
                 if ( room_num.equals( client_list.get(i).getRoomNum() )){
                     
-                    user_list_json = user_list_json + "《" + client_list.get(i).getUserName() + "》" + client_list.get(i).getReadycheck();
+                    user_list_json = 
+                             user_list_json 
+                    + "《" + client_list.get(i).getUserName() 
+                    + "》" + client_list.get(i).getReadycheck();
 
-                    
+                    if (client_list.get(i).getReadycheck().equals("ready")){
+                        System.out.println("시작");
+                        
+                    }
+                    else {
+                        start = false;
+                    }
+                    check = check + 1;
+                    System.out.println("testtttttt");
+
                 }
             }
+            System.out.println(check + "||" + client_list.size());
+            if (start && check > 1){
+                user_list_json = "《5"+ user_list_json;
+                System.out.println("모두다");
+
+             
+            }
+            else{
+                user_list_json = "《2"+ user_list_json;
+                System.out.println("아직");
+            }
+
             return user_list_json;
         }
     }
