@@ -54,9 +54,14 @@ public class Server {
                 String user_name = "";
                 String tcp_type = "";
                 String ready_check = "";
+                String thick = "";
+                String color = "";
+                String x = "";
+                String y = "";
                 
                 // String input = new String(buf, "UTF-8");
                 while( (input = conToClient.read())!=null){
+                    System.out.println("--------------------------------");
                     // System.out.println(input);
                     //conToClient.write(input);
                     if (ment == true){
@@ -73,33 +78,35 @@ public class Server {
                         System.out.println(user_list);
                         sendToAll(user_list+ "\n",room_num);
                         
+
                         ment = false;
                     }
                     
 
                     else {
-                        if (input.equals("fin!@#!@#》")){
+                        /*if (input.equals("fin!@#!@#》")){
                             exit_room(user_name);
                             String user_list = check_user_list(room_num);
                             System.out.println(user_list);
                             
                             sendToAll(user_list+ "\n",room_num);
                             break;
-                        }
+                        }*/
                         System.out.println(input);
+
                         int idx = input.indexOf("《");
                         tcp_type = input.substring(0,idx);
-                        System.out.println(tcp_type);
+                        System.out.println(tcp_type + "번타입 ");
                         
 
-                        input = input.substring(idx + 1);
-                        System.out.println(input);
-                            
+                        // input = input.substring(idx + 1);
+                        // System.out.println(input);
+                        input = input.substring(idx + 1);    
                         idx = input.indexOf("《");
                         room_num = input.substring(0,idx);
                         user_name = input.substring(idx + 1);
-                        System.out.println(room_num);
-                        System.out.println(user_name);
+                        System.out.println(room_num  + "번방");
+                        // System.out.println(user_name);
 
 
                         if (tcp_type.equals("1")){
@@ -124,6 +131,47 @@ public class Server {
                         else if (tcp_type.equals("3")){
                             System.out.println("ㅁㄴㅇㄹ");
                         }
+                        else if (tcp_type.equals("4")){
+                            System.out.println(room_num);
+                            idx = user_name.indexOf("《");
+                            color = user_name.substring(idx + 1);
+                            user_name = user_name.substring(0,idx);
+                            System.out.println(user_name);
+
+                            idx = color.indexOf("《");
+                            thick = color.substring(idx+1);
+                            color = color.substring(0,idx);
+                            System.out.println(color);
+                            
+                            idx = thick.indexOf("《");
+                            x = thick.substring(idx+1);
+                            thick = thick.substring(0,idx);
+                            System.out.println(thick);
+
+                            idx = x.indexOf("《");
+                            y = x.substring(idx+1);
+                            x = x.substring(0,idx);
+                            System.out.println(x);
+                            
+                            idx = y.indexOf("《");
+                            y = y.substring(0,idx);
+                            System.out.println(y);
+                            
+                        }
+
+
+                        else if (tcp_type.equals("10")){
+                            idx = user_name.indexOf("》");
+                            user_name = user_name.substring(0,idx);
+                            System.out.println(user_name);
+                            exit_room(user_name);
+                            String user_list = check_user_list(room_num);
+                            System.out.println(user_list);
+                            
+                            sendToAll(user_list+ "\n",room_num);
+                            break;
+                        }
+
                         else 
                             System.out.println("aaa");
                     }
@@ -134,7 +182,7 @@ public class Server {
 
         public void exit_room(String user_name){
             for (int i =0 ;i < client_list.size() ; i ++) {
-                if (user_name.equals(client_info.getUserName())){
+                if (user_name.equals(client_list.get(i).getUserName())){
                     System.out.println(client_list.get(i).getUserName() + " 나감");
                     client_list.remove(i);
                     clients.remove(i);
@@ -175,10 +223,7 @@ public class Server {
             String user_list_json = "";
             int check = 0;
             boolean start = true;
-            System.out.println("qqwqwwqwqwqwqw" + client_list.size());
-            if (client_list.size() == 2){
-                  System.out.println("qqwqwwqwqwqwqw" + client_list.size() + client_list.get(1).getUserName()); 
-            }
+
             for (int i = 0 ; i < client_list.size() ; i ++ ){
                 if ( room_num.equals( client_list.get(i).getRoomNum() )){
                     
@@ -203,13 +248,13 @@ public class Server {
             if (start && check > 1){
                 user_list_json = "《5"+ user_list_json;
                 System.out.println("모두다");
-
-             
             }
             else{
                 user_list_json = "《2"+ user_list_json;
                 System.out.println("아직");
             }
+
+            System.out.println("바뀐 사이즈" + client_list.size());
 
             return user_list_json;
         }
