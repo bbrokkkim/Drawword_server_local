@@ -19,11 +19,14 @@ ini_set('display_errors', '1');
 		}
 
 		$query = "insert into room_info (room_name,room_status,del_status,today) values ('$room_name','wait','live','$date')";
-		echo $query;
 		$result = mysqli_query($connect,$query);
+		$query = "select * from room_info order by iden desc limit 1";
+		$result = mysqli_query($connect,$query);
+		$data = mysqli_fetch_array($result);
+		echo $data['iden'];
 	}
 	else if ($choice == 2){
-		$query = "select * from room_info where room_status = 'wait' and del_status = 'live'";
+		$query = "select * from room_info where del_status = 'live'";
 		// echo $query;
 		$result = mysqli_query($connect, $query);
 		$count = mysqli_num_rows($result);
@@ -33,11 +36,25 @@ ini_set('display_errors', '1');
 		}
 		$arr = array();
 		for ($i = 0; $i < $count; $i++) {
-			$data = mysqli_fetch_assoc($result)or die("추출실패");
+			$data = mysqli_fetch_assoc($result);
 			array_push($arr, $data);
 		}
 		$json = json_encode($arr);
 		echo $json;
+	}
+	else if ($choice == 3){
+		$room_num = isset($_POST['room_num']) ? $_POST['room_num'] : "";	
+		$query = "select * from room_info where iden = $room_num and room_name = 'wait' ";
+		$result = mysqli_query($connect, $query);
+		$count = mysqli_num_rows($result);
+		if ($count == 0){
+			echo "nothing";
+		}
+		else {
+			echo "pass";
+		}
+
+		
 	}
 
 
