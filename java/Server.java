@@ -154,7 +154,7 @@ public class Server {
                                 sendToExcept("《2.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
                                 System.out.println("스타트!!!!!!!1 : " + room_num + " || type"+ check_room_master);
                             
-                                javaDB.connect_db(room_num);
+                                javaDB.connect_db(room_num,1);
                             }
                             else if(check_room_master.equals("3")){
                                 System.out.println("레디");
@@ -194,7 +194,7 @@ public class Server {
                             sendToExcept("《7《"+user_name+"《"+"\n",room_num,user_name);
                             // sendToAll("《8《65"+"\n" ,room_num);
                 
-                            // timer.start();
+                            timer.start();
 
 
                             
@@ -235,7 +235,7 @@ public class Server {
                             sendToAll("《2"+user_list+"《"+ "\n",room_num);
                             break;
                         }
-
+                        //게임 끝
                         else 
                             System.out.println("해당없음");
                     }
@@ -473,7 +473,7 @@ public class Server {
         
         //답 긁어오기
         public String getAnswer() {
-            return "답";
+            return "answer";
         }
         public String getRoomNum() {
             return room_num;
@@ -481,7 +481,6 @@ public class Server {
         public int getRoomUserList() {
             return room_user_list.size();
         }
-        
         public void getRoomturnModify(int no) {
             room_user_turn.set(no, "1");
         }
@@ -603,7 +602,7 @@ public class Server {
     public static class JavaDB  {
 
         
-        public void connect_db (String room_num)  {  
+        public void connect_db (String room_num , int type)  {  
         String JDBC_DRIVER = "org.mariadb.jdbc.Driver";  
         String DB_URL = "jdbc:mysql://mariadb.ceqw0wwolo9b.ap-northeast-2.rds.amazonaws.com/drawword";
 
@@ -621,10 +620,14 @@ public class Server {
                 System.out.println("\n- MySQL Connection");
                 stmt = conn.createStatement();
                 
-                String sql;
+                String sql = null;
                 // sql = "insert into user_list(name,id,pwd,phone,sex,photo_uri) values ('name','id','pwd','phone',1,'photo_uri')";
-                sql = "update room_info set room_status = 'already' where iden = " + room_num;
-                
+                if (type == 1){
+                    sql = "update room_info set room_status = 'already' where iden = " + room_num;
+                }
+                else if (type == 2){
+                    sql = "update room_info set del_status = 'dead' where iden = " + room_num;
+                }
                 System.out.println(sql);
                 ResultSet rs = stmt.executeQuery(sql);
 

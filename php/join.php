@@ -19,6 +19,7 @@
 	else if ($sex == 'female'){
 		$int_sex = 2;
 	}
+	//사진
 	if ($choice == 1){
 		// echo $photo_uri;
 		// echo $choice;
@@ -38,6 +39,15 @@
 		    $photo_uri = $uri;
 		}
 		$token = rand(10000000, 99999999);
+
+		$query = "select * from user_list where id = '$id'";
+		$result = mysqli_query($connect,$query)or die ("입력 실패");
+		$total_row = mysqli_num_rows($result);
+		if (!$total_row == 0) {
+			echo "overlap";
+			exit;	
+		}
+
 		$query = "insert into user_list(name,id,pwd,phone,sex,photo_uri) values ('$name','$id','$pwd','$phone',$int_sex,'$photo_uri')";
 		$result = mysqli_query($connect,$query)or die ("입력 실패");
 		$query = "select * from user_list where id  ='$id'";

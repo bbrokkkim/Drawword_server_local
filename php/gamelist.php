@@ -6,6 +6,7 @@ ini_set('display_errors', '1');
 	$user_iden = isset($_POST['user_iden']) ? $_POST['user_iden'] : "";
 	$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : "";
 	$room_name = isset($_POST['room_name']) ? $_POST['room_name'] : "";
+	$limit = isset($_POST['limit']) ? $_POST['limit'] : "";
 
 
 	//방 생성
@@ -26,10 +27,12 @@ ini_set('display_errors', '1');
 		echo $data['iden'];
 	}
 	else if ($choice == 2){
-		$query = "select * from room_info where del_status = 'live'";
+		$highlimit = $limit + 20;
+		$query = "select * from room_info where del_status = 'live' limit $limit , $highlimit";
 		// echo $query;
 		$result = mysqli_query($connect, $query);
 		$count = mysqli_num_rows($result);
+		// echo $count . "||||";
 		if ($count == 0){
 			echo "nothing";
 			exit;
@@ -44,20 +47,36 @@ ini_set('display_errors', '1');
 	}
 	else if ($choice == 3){
 		$room_num = isset($_POST['room_num']) ? $_POST['room_num'] : "";	
-		$query = "select * from room_info where iden = $room_num and room_name = 'wait' ";
+		$query = "select * from room_info where iden = $room_num and room_status = 'wait' ";
 		$result = mysqli_query($connect, $query);
 		$count = mysqli_num_rows($result);
+		// echo $query;
 		if ($count == 0){
 			echo "nothing";
 		}
 		else {
 			echo "pass";
 		}
-
-		
 	}
+	else if ($choice == 4){
 
+		$query = "select * from room_info where del_status = 'live' and iden > $limit limit 0 ,20;
+		";
+		// echo $query;
+		$result = mysqli_query($connect, $query);
+		$count = mysqli_num_rows($result);
+		// echo $count . "||||";
+		if ($count == 0){
+			echo "nothing";
+			exit;
+		}
+		$arr = array();
+		for ($i = 0; $i < $count; $i++) {
+			$data = mysqli_fetch_assoc($result);
+			array_push($arr, $data);
+		}
+		$json = json_encode($arr);
+		echo $json;
 
-	
-
+	}
 ?>
