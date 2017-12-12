@@ -1,12 +1,18 @@
 <?php 
-ini_set('display_errors', '1');
+	ini_set('display_errors', '1');
 	include_once("config.php");
+	
+		$choice = $_POST['choice'];
+		$user_iden = isset($_POST['user_iden']) ? $_POST['user_iden'] : "";
+		$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : "";
+		$room_name = isset($_POST['room_name']) ? $_POST['room_name'] : "";
+		$limit = isset($_POST['limit']) ? $_POST['limit'] : "";
+		if ( $room_name == ""){
+			$room_name = "재밌는 게임 해요!";
+		}
 
-	$choice = $_POST['choice'];
-	$user_iden = isset($_POST['user_iden']) ? $_POST['user_iden'] : "";
-	$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : "";
-	$room_name = isset($_POST['room_name']) ? $_POST['room_name'] : "";
-	$limit = isset($_POST['limit']) ? $_POST['limit'] : "";
+
+		
 
 
 	//방 생성
@@ -15,10 +21,6 @@ ini_set('display_errors', '1');
 		$date_ = DATE("Y-m-d-H-i D");
 		$date = (String) $date_;
 		
-		if ( $room_name == ""){
-			$room_name = "재밌는 게임 해요!";
-		}
-
 		$query = "insert into room_info (room_name,room_status,del_status,today) values ('$room_name','wait','live','$date')";
 		$result = mysqli_query($connect,$query);
 		$query = "select * from room_info order by iden desc limit 1";

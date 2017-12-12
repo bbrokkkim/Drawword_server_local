@@ -1,4 +1,4 @@
-// package tcp_connect;
+   // package tcp_connect;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -47,7 +47,7 @@ public class Server {
         
         int get = 0;
         
-        
+        boolean time_break = true;
         int ment_num = 0;
         int info = 0;
         boolean ment = true;
@@ -65,6 +65,7 @@ public class Server {
         String answer = "";
         String x = "";
         String y = "";
+        String answercountList = "";
         // String[4] info = 
         ServerThread(Socket socket) {
             this.socket = socket;
@@ -191,14 +192,11 @@ public class Server {
                             answer = roomList.get(get).getAnswer();
                             System.out.println("《6《"+room_num+"《"+user_name+"《"+answer+"《"+"  \\  " + user_name);
                             sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,user_name);
-                            sendToExcept("《7《"+user_name+"《"+"\n",room_num,user_name);
+                            sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,user_name);
                             // sendToAll("《8《65"+"\n" ,room_num);
-                
-                            timer.start();
-
-
-                            
+                            timer.start();    
                         }
+
                         //정답 시도
                         else if (tcp_type.equals("7")){
                             answer = roomList.get(get).getAnswer();
@@ -209,7 +207,41 @@ public class Server {
                             System.out.println("number: " + room_num + " || answer : "+ answer +" || message: " + content);
                             
                             if (answer.equals(content)){
+                                time_break = false;
+                                roomList.get(get).setTimeBreaker();
                                 System.out.println("right");
+                                System.out.println("right!!!!");
+                                System.out.println("방의 갯수 : " + roomList.size());
+                                System.out.println("right~~~~");
+                                for (int i = 0; i < roomList.size(); i++) {
+                                    if (roomList.get(i).getRoomNum().equals(room_num)) {
+                                        System.out.println(to + " 가 맞춤");
+                                        roomList.get(i).setAnswerCount(to);
+                                    }
+                                }
+                                sendToAll("《7.5《"+user_name+ "\n",room_num);
+                                /*for (int i = 0; i < roomList.get(get).getSize(); i++) {
+                                    System.out.println("다음턴");
+                                    //다음 턴
+                                    if (roomList.get(get).getRoomturn(i).equals("2")){
+                                        
+                                        if (next == true) {
+                                            roomList.get(get).getRoomturnModify(i);
+                                            sendToSomeone("《6.5《"+"\n", room_num, roomList.get(get).getRoomUser(i));
+                                            System.out.println("아이디 : " + roomList.get(get).getRoomUser(i));
+                                            
+                                            break;
+                                            
+                                        }
+                                    }
+                                    //게임 끝
+                                    else {
+                                        answercountList = roomList.get(i).getAnwserCountList() + "《";
+                                        sendToAll("《6.8" + answercountList, room_num);
+                                    }
+                                }*/
+
+                                
                             }
                             else if (!answer.equals(content)){    
                                 System.out.println("wrong");
@@ -228,7 +260,7 @@ public class Server {
                             idx = user_name.indexOf("》");
                             user_name = user_name.substring(0,idx);
                             System.out.println(user_name);
-                            exit_room(user_name);
+                            exit_room(user_name,room_num);
                             user_list = check_user_list(room_num);
                             System.out.println(user_list);
                             
@@ -253,16 +285,35 @@ public class Server {
             }
         }
 
-        public void exit_room(String user_name){
+        public void exit_room(String user_name,String room_num){
+            boolean exit_room_check = true;
             for (int i =0 ;i < client_list.size() ; i ++) {
                 if (user_name.equals(client_list.get(i).getUserName())){
                     System.out.println(client_list.get(i).getUserName() + " 나감");
                     client_list.remove(i);
                     clients.remove(i);
+                    System.out.println("1");
+                    System.out.println("2");
                 }
-                else {
-                    System.out.println("있음 : " + client_list.get(i).getUserName() );
+                System.out.println("211");
+
+
+                System.out.println("2");
+            }
+            for (int i =0 ;i < client_list.size() ; i ++) {
+                if (room_num.equals(client_list.get(i).getRoomNum())) {
+                    exit_room_check = false;
+                    System.out.println("55");
                 }
+            }
+
+            System.out.println("3");
+            if (exit_room_check == true) {
+                System.out.println(room_num + "번방이 없어졌습니다.");
+                javaDB.connect_db(room_num, 2);
+            }
+            else {
+                System.out.println(room_num + "번방이 유지되고 있습니다.");
             }
         }
 
@@ -317,7 +368,7 @@ public class Server {
                 }
             }
         }
-
+        
         public String check_user_list(String room_num){
             String user_list_json = "";
             int check = 0;
@@ -358,7 +409,7 @@ public class Server {
                 }
                 System.out.println("방번호 사이즈!!!!!" + roomList.get(get).getSize());
                 // System.out.println("《6.5《" + roomList.get(get).getRoomUser(0));
-                
+                roomList.get(get).getRoomturnModify(0);
             }
             else {
                 check_room_master = "3";
@@ -395,37 +446,64 @@ public class Server {
                 
                 int time = 60;
                 for (int i = 0; i < 60; i++) {
-                    sendToAll("《8《" + time+"《"+"\n",room_num);
+                    if (i > 50){
+                        sendToAll("《8《0" + time+"《"+"\n",room_num);    
+                    }
+                    else {
+                        sendToAll("《8《" + time+"《"+"\n",room_num);
+                    }
                     System.out.println(time);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                        
                     }
                     time = time - 1;
+                    if (roomList.get(get).getTimeBreak() == false){
+//                        time_break = true;
+                        roomList.get(get).setTimeStarter();
+                        System.out.println("이벤트 때문에 턴                                끝남");
+                        break;
+                    }
+                    else {
+                        System.out.println("이벤트 때문에 턴                        안    끝남");
+                    }
+
+                    System.out.println(time_break);
                 }
                 sendToAll("《8《65《"+"\n" ,room_num);
                 boolean next = true;
-                System.out.println("테스트 : " + get );
-                System.out.println("테스트2 : " + roomList.size());
-                System.out.println("!! " +roomList.get(get).getSize());
+                System.out.println("몇번째 방?? : " + get );
+                System.out.println("현재 게임진행중인 방 갯수: " + roomList.size());
+                System.out.println("방에 있는 인원수 " +roomList.get(get).getSize());
                                      // roomList.get(get).getSize()
                 for (int i = 0; i < roomList.get(get).getSize(); i++) {
                     System.out.println("다음턴");
-                    if (roomList.get(get).getRoomturn(i).equals("2")){
-                        
-                        if (next == true) {
-                            roomList.get(get).getRoomturnModify(i);
-                            next = false;
-                        }
-                        else if (next == false) {
-                            sendToSomeone("《6.5《"+"\n", room_num, roomList.get(get).getRoomUser(i));
-                            System.out.println("아이디 : " + roomList.get(get).getRoomUser(i));
-                            next = true;
-                        }
+                    //다음 턴
+                    if (roomList.get(get).getRoomturn(i).equals("2")) {
+                        // System.out.println(roomList.get(get).getRoomUser(i));
+                        roomList.get(get).getRoomturnModify(i);
+                        System.out.println(i);
+                        System.out.println(roomList.get(get).getRoomUser(i)+" dddddd :   "+roomList.get(get).getRoomturn(i));
+                        sendToSomeone("《6.5《"+"\n", room_num, roomList.get(get).getRoomUser(i));
+                        //sendToExcept("《6.5《"+"\n", room_num, roomList.get(get).getRoomUser(i));
+                        System.out.println("아이디dldldldld : " + roomList.get(get).getRoomUser(i));    
+                        next = false;
+                        break;
                     }
+                }
+                //게임 끝
+                if (next == true){
+                    System.out.println("끝!!!!!!!!!!!!111" );
+                    answercountList = roomList.get(get).getAnwserCountList();
+                    sendToAll("《0《" + answercountList+"\n", room_num);
+                    System.out.println("끝 : " + answercountList);
+                    
+                }
+                //게임 끝
+                else if (next == false){
+                    System.out.println("아직 안끝낫다~ ");
                 }
             }
         };
@@ -444,6 +522,7 @@ public class Server {
         String answer;
         String room_num;
         String status = "2";
+        boolean time_break = true;
         RoomInfo(String room_num){
             this.room_num = room_num;
             room_user_list = new ArrayList<>();
@@ -484,6 +563,15 @@ public class Server {
         public void getRoomturnModify(int no) {
             room_user_turn.set(no, "1");
         }
+        public void setTimeBreaker() {
+            time_break = false;
+        }
+        public void setTimeStarter() {
+            time_break = true;
+        }
+        public boolean getTimeBreak() {
+            return time_break;
+        }
         public String getRoomUser(int no) {
             return room_user_list.get(no).getUserName();
         }
@@ -496,7 +584,30 @@ public class Server {
         public int getSize() {
             return room_user_list.size();
         }
+        public void setAnswerCount(String user_name) {
+            System.out.println("카운트 함수 들어옴");
+            System.out.println("방에 있는 사람 수"+room_user_list.size());
+//            System.out.println(room_user_list.get(0).getUserName());
+            //정답 카운트 만들고잇음!!!!!!!!!!!!!!
+            for (int i = 0; i < room_user_list.size(); i++) {
+                if (room_user_list.get(i).getUserName().equals(user_name)) {
+                    System.out.println(room_user_list.get(i).getUserName() + "의 점수가 올랐습니다.");
+                    System.out.println("현재점수 : " + room_user_list.get(i).getUserCount());
+                    room_user_list.get(i).setUserCount();
+                    System.out.println("점수 오름");
+                }
+            }
+        }
+        public String getAnwserCountList() {
+            String list = "";
+            //카운트 리스트 정리해서 리턴
+            for (int j = 0; j <room_user_list.size(); j++) {
+                list = list + room_user_list.get(j).getUserName() + " : " + room_user_list.get(j).getUserCount() + "《";
+            }
+            return list;
+        }
     }
+
     public static class Room_client_list{
         String user_name;
         int user_count = 0;
@@ -504,7 +615,10 @@ public class Server {
             this.user_name = user_name;
         }
         public void setUserCount(){
+            System.out.println("현재점수123123 ");
+            
             user_count = user_count + 1;
+            System.out.println("현재점수 "  + user_count);
         }
         public String getUserName(){
             return user_name;
@@ -626,7 +740,7 @@ public class Server {
                     sql = "update room_info set room_status = 'already' where iden = " + room_num;
                 }
                 else if (type == 2){
-                    sql = "update room_info set del_status = 'dead' where iden = " + room_num;
+                    sql = "update room_info set del_status = 'dead' and room_status = 'already' where iden = " + room_num;
                 }
                 System.out.println(sql);
                 ResultSet rs = stmt.executeQuery(sql);
