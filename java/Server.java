@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.*;  
+import java.sql.*;
 
 public class Server {
     static ArrayList<ConnectionToClient> clients = new ArrayList<>();
@@ -46,7 +46,8 @@ public class Server {
         String check_room_master = "";
         
         int get = 0;
-        
+        String to_cass ="";
+        String ment_cass = "";
         boolean time_break = true;
         int ment_num = 0;
         int info = 0;
@@ -135,6 +136,11 @@ public class Server {
                         }
                         else if (tcp_type.equals("1")){
                             System.out.println("number: " + room_num + " || message: " + user_name);
+                            idx = user_name.indexOf("》");
+                            to_cass = user_name.substring(0,idx);
+                            ment_cass = user_name.substring(idx + 1);
+                            System.out.println(to_cass + "~~~~!@!@!@" + ment_cass);
+                            Cqlconnect.insert(room_num,to_cass,ment_cass);
                             sendToAll("《1《"+user_name+ "\n",room_num);
                         }
                         //레디 상태
@@ -204,8 +210,9 @@ public class Server {
                             to = user_name.substring(0,idx);
                             content = user_name.substring(idx+1);
                             
-                            System.out.println("number: " + room_num + " || answer : "+ answer +" || message: " + content);
-                            
+
+                            System.out.println("7");
+                            Cqlconnect.insert(room_num,to,content);
                             if (answer.equals(content)){
                                 time_break = false;
                                 roomList.get(get).setTimeBreaker();
@@ -740,7 +747,7 @@ public class Server {
                     sql = "update room_info set room_status = 'already' where iden = " + room_num;
                 }
                 else if (type == 2){
-                    sql = "update room_info set del_status = 'dead' and room_status = 'already' where iden = " + room_num;
+                    sql = "update room_info set del_status = 'dead' , room_status = 'already' where iden = " + room_num;
                 }
                 System.out.println(sql);
                 ResultSet rs = stmt.executeQuery(sql);
@@ -778,55 +785,3 @@ public class Server {
       
     }
 }
-
-
-                            /*System.out.println(room_num);
-                            idx = user_name.indexOf("《");
-                            color = user_name.substring(idx + 1);
-                            user_name = user_name.substring(0,idx);
-                            System.out.println(user_name);
-
-                            idx = color.indexOf("《");
-                            thick = color.substring(idx+1);
-                            color = color.substring(0,idx);
-                            System.out.println(color);
-                            
-                            idx = thick.indexOf("《");
-                            x = thick.substring(idx+1);
-                            thick = thick.substring(0,idx);
-                            System.out.println(thick);
-
-                            idx = x.indexOf("《");
-                            y = x.substring(idx+1);
-                            x = x.substring(0,idx);
-                            System.out.println(x);
-                            
-                            idx = y.indexOf("《");
-                            y = y.substring(0,idx);
-                            System.out.println(y);*/
-
-
-                            /*System.out.println(room_num);
-                            idx = user_name.indexOf("《");
-                            color = user_name.substring(idx + 1);
-                            user_name = user_name.substring(0,idx);
-                            System.out.println(user_name);
-
-                            idx = color.indexOf("《");
-                            thick = color.substring(idx+1);
-                            color = color.substring(0,idx);
-                            System.out.println(color);
-                            
-                            idx = thick.indexOf("《");
-                            x = thick.substring(idx+1);
-                            thick = thick.substring(0,idx);
-                            System.out.println(thick);
-
-                            idx = x.indexOf("《");
-                            y = x.substring(idx+1);
-                            x = x.substring(0,idx);
-                            System.out.println(x);
-                            
-                            idx = y.indexOf("《");
-                            y = y.substring(0,idx);
-                            System.out.println(y);*/
