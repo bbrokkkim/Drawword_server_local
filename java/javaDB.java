@@ -21,18 +21,18 @@ public class javaDB {
             
             String sql;
             String room_num;
-            sql = "insert into user_list(name,id,pwd,phone,sex,photo_uri) values ('name','id','pwd','phone',1,'photo_uri')";
-            sql = "update room_info set room_status = 'already' where iden = 16";
-            ResultSet rs = stmt.executeQuery(sql);
+            
+            ResultSet rs = stmt.executeQuery("select * from word order by rand() limit 1;");
 
+                // System.out.print(rs.getString("groupName"));
             while(rs.next()){
-                String groupName = rs.getString("groupName");
-                String memberName = rs.getString("memberName");
+                String groupName = rs.getString("word");
+                // String memberName = rs.getString("memberName");
 
                 System.out.print("\n** Group : " + groupName);
-                System.out.print("\n    -> Member: " + memberName);
+                // System.out.print("\n    -> Member: " + memberName);
             }
-            rs.close();
+            // rs.close();
             stmt.close();
             conn.close();
         }catch(SQLException se1){

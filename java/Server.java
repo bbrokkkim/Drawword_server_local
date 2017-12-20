@@ -13,9 +13,11 @@ public class Server {
     static ArrayList<ConnectionToClient> clients = new ArrayList<>();
     static ArrayList<Client_info> client_list = new ArrayList<>();
     static JavaDB javaDB = new JavaDB();
+    
     public static void main(String[] args) {
+        Cqlconnect cqlconnect = new Cqlconnect();
         try {
-            System.out.println("시작!!");      
+            System.out.println("시작");      
             System.out.println("대기중....");
             Socket socket = null;
             ServerSocket server = new ServerSocket(8000);
@@ -194,8 +196,9 @@ public class Server {
                             }
                             
                             //c쿼리에서 단어 빼내서 ex> "test"
-                            
+                            roomList.get(get).setAnswer();
                             answer = roomList.get(get).getAnswer();
+                            System.out.println(answer+"");
                             System.out.println("《6《"+room_num+"《"+user_name+"《"+answer+"《"+"  \\  " + user_name);
                             sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,user_name);
                             sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,user_name);
@@ -526,7 +529,7 @@ public class Server {
         ArrayList<Room_client_list> room_user_list;
         ArrayList<String> room_user_turn;
         int time;
-        String answer;
+        String answer = null;
         String room_num;
         String status = "2";
         boolean time_break = true;
@@ -557,9 +560,13 @@ public class Server {
             this.status = "0";
         }*/
         
+
+        public void setAnswer(){
+            answer = javaDB.getAnswer();
+        }
         //답 긁어오기
         public String getAnswer() {
-            return "answer";
+            return answer;
         }
         public String getRoomNum() {
             return room_num;
@@ -722,7 +729,39 @@ public class Server {
 
     public static class JavaDB  {
 
-        
+        public String getAnswer(){
+
+            String JDBC_DRIVER = "org.mariadb.jdbc.Driver";  
+            String DB_URL = "jdbc:mysql://mariadb.ceqw0wwolo9b.ap-northeast-2.rds.amazonaws.com/drawword";
+
+            String USERNAME = "root";
+            String PASSWORD = "KKKKKKKK";  
+            String answer = null;
+            try{
+            Connection conn = null;
+            Statement stmt = null;
+            conn = DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from word order by rand() limit 1;");
+            
+                // System.out.print(rs.getString("groupName"));
+            while(rs.next()){
+                answer = rs.getString("word");
+                // String memberName = rs.getString("memberName");
+
+                System.out.print("\n** Group : " + answer);
+                // System.out.print("\n    -> Member: " + memberName);
+            }
+            }catch(SQLException se1){
+                se1.printStackTrace();
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+            return answer;
+
+        }
+
+
         public void connect_db (String room_num , int type)  {  
         String JDBC_DRIVER = "org.mariadb.jdbc.Driver";  
         String DB_URL = "jdbc:mysql://mariadb.ceqw0wwolo9b.ap-northeast-2.rds.amazonaws.com/drawword";
@@ -752,13 +791,7 @@ public class Server {
                 System.out.println(sql);
                 ResultSet rs = stmt.executeQuery(sql);
 
-                while(rs.next()){
-                    String groupName = rs.getString("groupName");
-                    String memberName = rs.getString("memberName");
-
-                    System.out.print("\n** Group : " + groupName);
-                    System.out.print("\n    -> Member: " + memberName);
-                }
+                
                 rs.close();
                 stmt.close();
                 conn.close();
