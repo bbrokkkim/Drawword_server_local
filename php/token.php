@@ -6,10 +6,19 @@
 	$user_iden = isset($_POST['user_iden']) ? $_POST['user_iden'] : "";
 	$user_name = isset($_POST['user_name']) ? $_POST['user_name'] : "";
 	$token = isset($_POST['token']) ? $_POST['token'] : "";
+	$choice = isset($_POST['choice']) ? $_POST['choice'] : "";
 	echo $user_iden;
 	echo $user_name;
 	// echo $token;
-	if (!$user_iden == ""){
+	
+	if ($choice == "2"){
+		$query = "delete from users where user_iden = '$user_iden'";
+		$result = mysqli_query($connect,$query)or die ("입력 실패");
+		echo $query;
+	}
+
+
+	else if (!$user_iden == ""){
 		$query = "select * from users where user_iden = '$user_iden'";
 		echo $query . "<br>";
 		$result = mysqli_query($connect,$query)or die ("입력 실패");

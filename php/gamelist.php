@@ -30,7 +30,7 @@
 	}
 	else if ($choice == 2){
 		$highlimit = $limit + 20;
-		$query = "select * from room_info where del_status = 'live' limit $limit , $highlimit";
+		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' limit $limit , $highlimit";
 		// echo $query;
 		$result = mysqli_query($connect, $query);
 		$count = mysqli_num_rows($result);
@@ -62,7 +62,7 @@
 	}
 	else if ($choice == 4){
 
-		$query = "select * from room_info where del_status = 'live' and iden > $limit limit 0 ,20;
+		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' and iden > $limit limit 0 ,20;
 		";
 		// echo $query;
 		$result = mysqli_query($connect, $query);

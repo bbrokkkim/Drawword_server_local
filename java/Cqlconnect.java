@@ -3,33 +3,36 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 
-public class Cqlconnect{
-	/*static Cluster cluster = null;
-	static Session session = null;*/
-	/*public Cqlconnect(){
-		System.out.println("setsetetesetsetset11111111111111111111111111111111"); 
+public class Cqlconnect {
+	Cluster cluster = null;
+	Session session = null;
+	public Cqlconnect(){
+		System.out.println("cassandra connected"); 
 		cluster = Cluster.builder()                                                    // (1)
 		            .addContactPoint("127.0.0.1")
 		            .build();
-        session = cluster.connect("drawword");         
-		
-	}*/
-    public static void insert(String room_num,String user_id,String contents) {
+		System.out.println("cassandra connectting.............................");     
+	
+        session = cluster.connect("drawword");    
 
-		Cluster cluster = null;
-		Session session = null;
+		System.out.println("cassandra connect complete");     
+	
+	}
+    public void insert(String room_num,String user_id,String contents) {
+
 		try {
 		    System.out.println("-----------------------------------------------------------------------------"); 
-		cluster = Cluster.builder()                                                    // (1)
+	/*	cluster = Cluster.builder()                                                    // (1)
 		            .addContactPoint("127.0.0.1")
 		            .build();
         session = cluster.connect("drawword");         
-		    
+	*/	    
 		                                      // (2)
-		    
-		    ResultSet rs = session.execute("insert into chatting (room_num,user_id,contents,time) values ("+room_num+",'"+user_id+"','"+contents+"',toUnixTimestamp(now()))");    // (3)
+		    String query = "insert into chatting (room_num,user_id,contents,time) values ("+room_num+",'"+user_id+"','"+contents+"',toUnixTimestamp(now()))";
+		    ResultSet rs = session.execute(query);    // (3)
 		    Row row = rs.one();
 		    // System.out.println(row.getString("contents")+"     testsetsetset");                          // (4)
+			System.out.println(query);
 		}
 		catch (Exception e){
 			e.printStackTrace();
