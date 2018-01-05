@@ -7,15 +7,13 @@ public class Cqlconnect {
 	Cluster cluster = null;
 	Session session = null;
 	public Cqlconnect(){
-		System.out.println("cassandra connected"); 
+		System.out.println("try cassandra connect"); 
 		cluster = Cluster.builder()                                                    // (1)
 		            .addContactPoint("127.0.0.1")
 		            .build();
-		System.out.println("cassandra connectting.............................");     
-	
-        session = cluster.connect("drawword");    
-
-		System.out.println("cassandra connect complete");     
+		System.out.println("cassandra connecting.............................");     
+        session = cluster.connect("drawword");    	
+		System.out.println("complete cassandra connect");     
 	
 	}
     public void insert(String room_num,String user_id,String contents) {

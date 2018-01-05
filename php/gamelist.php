@@ -28,9 +28,33 @@
 		$data = mysqli_fetch_array($result);
 		echo $data['iden'];
 	}
+	//방 새로고침
+	else if ($choice == 0){
+		//40개씩 가지고 온다.
+		$highlimit = $limit + 40;
+		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' order by iden desc limit 40";
+		// echo $query;
+		$result = mysqli_query($connect, $query);
+		$count = mysqli_num_rows($result);
+		// echo $count . "||||";
+
+		if ($count == 0){
+			echo "nothing";
+			exit;
+		}
+		$arr = array();
+		for ($i = 0; $i < $count; $i++) {
+			$data = mysqli_fetch_assoc($result);
+			array_push($arr, $data);
+		}
+		$json = json_encode($arr);
+		echo $json;
+	}
+	//방 가지고 오기
 	else if ($choice == 2){
-		$highlimit = $limit + 20;
-		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' limit $limit , $highlimit";
+		//40개씩 가지고 온다.
+		$highlimit = $limit + 40;
+		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' order by iden desc limit $limit , $highlimit";
 		// echo $query;
 		$result = mysqli_query($connect, $query);
 		$count = mysqli_num_rows($result);
@@ -47,9 +71,10 @@
 		$json = json_encode($arr);
 		echo $json;
 	}
+	//방 유무 여부
 	else if ($choice == 3){
 		$room_num = isset($_POST['room_num']) ? $_POST['room_num'] : "";	
-		$query = "select * from room_info where iden = $room_num and room_status = 'wait' ";
+		$query = "select * from room_info where iden = $room_num and room_status = 'wait' order by iden  desc";
 		$result = mysqli_query($connect, $query);
 		$count = mysqli_num_rows($result);
 		// echo $query;
@@ -60,9 +85,10 @@
 			echo "pass";
 		}
 	}
+	//페이징 이용한 다음 방 확인
 	else if ($choice == 4){
 
-		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' and iden > $limit limit 0 ,20;
+		$query = "select * from room_info where del_status = 'live' and room_status = 'wait' and iden < $limit order by iden desc limit 0 ,40;
 		";
 		// echo $query;
 		$result = mysqli_query($connect, $query);
