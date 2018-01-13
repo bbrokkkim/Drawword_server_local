@@ -122,7 +122,7 @@ public class Server {
 
 
 
-                        check_still_connect.start();
+                        // check_still_connect.start();
                         ment = false;
                     }
                     else {
