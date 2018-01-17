@@ -15,7 +15,7 @@ include_once ("config.php");
 	$room_n = "testroom";
 	$room_name;
 	$date = "20";
- 	for ($i = 100; $i < 200; $i++) {
+ 	for ($i = 1; $i < 100; $i++) {
  		$room_name = $room_n.$i;
 		$query = "insert into room_info (room_name,room_status,del_status,today) values ('$room_name','wait','live','$date')";
 		echo $query;

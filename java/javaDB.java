@@ -21,15 +21,15 @@ public class javaDB {
             
             String sql;
             String room_num;
-            
+            String answer;
             ResultSet rs = stmt.executeQuery("select * from word order by rand() limit 1;");
 
                 // System.out.print(rs.getString("groupName"));
             while(rs.next()){
-                String groupName = rs.getString("word");
+                answer = rs.getString("word");
                 // String memberName = rs.getString("memberName");
 
-                System.out.print("\n** Group : " + groupName);
+                System.out.print("\n** Group : " + answer);
                 // System.out.print("\n    -> Member: " + memberName);
             }
             // rs.close();
