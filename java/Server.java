@@ -87,7 +87,6 @@ public class Server {
             this.line = line;
             this.conToClient = new ConnectionToClient(socket);
             clients.add(conToClient);
-            
         }
         public void run() {
             try {
@@ -110,7 +109,7 @@ public class Server {
                                 // client_list.get(i).modifySocket();
                                 overlap_check = false;
 
-                                System.out.println( user_name + "님이 잠깐 끊겼습니다 || 세이브 메세지 : " + savement );
+                                System.out.println( user_name + "님이 잠깐 끊겼습니다 " );
                             }
                         }
                         /*if (overlap_check == false){
@@ -131,7 +130,7 @@ public class Server {
                         user_list = check_user_list(room_num);
                         System.out.println(user_list + "1111111");
                         sendToAll("《2"+user_list+"《"+ "\n",room_num);
-                        if (!savement.equals("")){
+/*                        if (!savement.equals("")){
                             System.out.println("세이브메세지가 있습니다.");
                             sendToSomeone(savement,room_num,user_name);
                                 
@@ -139,7 +138,7 @@ public class Server {
                         else {
                             System.out.println("세이브메세지가 없습니다.");
                             
-                        }
+                        }*/
                         // sendToAll("《1《test1》+"+"\n"+"《1《test1》++"+"\n"+"《1《test1》+++"+"\n",room_num);
 
 
@@ -419,7 +418,7 @@ public class Server {
             boolean exit_room_check = true;
             for (int i =0 ;i < client_list.size() ; i ++) {
                 if (user_name.equals(client_list.get(i).getUserName())){
-                    System.out.println(client_list.get(i).getUserName() + " 나감");
+                    System.out.println(client_list.get(i).getUserName() + " 나감 line " + line);
                     client_list.remove(i);
                     clients.remove(i);
                     System.out.println("1");
@@ -436,8 +435,8 @@ public class Server {
         public void exit_room(String user_name,String room_num){
             boolean exit_room_check = true;
             for (int i =0 ;i < client_list.size() ; i ++) {
-                if (user_name.equals(client_list.get(i).getUserName())){
-                    System.out.println(client_list.get(i).getUserName() + " 나감");
+                if (user_name.equals(client_list.get(i).getUserName()) && line == client_list.get(i).getLine() ){
+                    System.out.println(client_list.get(i).getUserName() + " 나감 line " + line);
                     // clients.get(i).disconnect();
                     client_list.remove(i);
                     clients.remove(i);
@@ -445,7 +444,7 @@ public class Server {
                 }
             }
             for (int i =0 ;i < client_list.size() ; i ++) {
-                if (room_num.equals(client_list.get(i).getRoomNum())) {
+                if (room_num.equals(client_list.get(i).getRoomNum()) ) {
                     exit_room_check = false;
                     System.out.println("55");
                 }
@@ -464,7 +463,7 @@ public class Server {
         public void user_ready(String user_name,String ready) {
             for (int i =0 ;i < client_list.size() ; i ++) {
                 System.out.println(user_name + "||" + client_list.get(i).getUserName());
-                if (user_name.equals(client_list.get(i).getUserName())){
+                if (user_name.equals(client_list.get(i).getUserName()) && client_list.get(i).getLine() == line){
                     if (ready.equals("wait")) {
                         client_list.get(i).setReadycheck("ready");
                         System.out.println("ready!");
@@ -547,7 +546,6 @@ public class Server {
                     }
                     check = check + 1;
                     System.out.println("testtttttt");
-
                 }
             }
             System.out.println(check + "||" + client_list.size());
@@ -600,6 +598,7 @@ public class Server {
 
         Thread check_still_connect = new Thread() {
             public void run() {
+                String user = user_name;
                 int count = 0;
                 while(true){
                     try { 
@@ -617,7 +616,20 @@ public class Server {
                         Thread.sleep(5000);*/
                         boolean check_get = true;
                         for (int j = 0; j < 3; j++) {
-                            sendToSomeone("《13《"+user_name+"》\n",room_num,user_name);
+                            
+                            int re_enter = 0;
+                            for(int z = 0; z < client_list.size(); z++) {
+                                if (client_list.get(z).getUserName().equals(user)) {
+                                    re_enter = re_enter + 1;
+                                }
+                            }
+                            if (re_enter > 1) {
+                                exit_room_coonect_checker = false;
+                                still_connect = false;
+                                break;
+                            }
+
+                            sendToSomeone("《13《"+user+"》\n",room_num,user);
                             if (exit_room_coonect_checker == false){
                                 System.out.println("방 나감");
                                 break;
@@ -625,7 +637,7 @@ public class Server {
                             if (still_connect == false){
                                 for (int i = 0 ; i < client_list.size() ; i ++ ) {
                                     System.out.println("비교 : " + room_num + "||" + client_list.get(i).getRoomNum());
-                                    if ( user_name.equals( client_list.get(i).getUserName() )){
+                                    if ( user.equals( client_list.get(i).getUserName() )){
 
                                         System.out.println("client name"+client_list.get(i).getUserName());
                                         // client_list.get(i).onStopActivity();
@@ -645,18 +657,18 @@ public class Server {
                                         System.out.println("연결 상태!!!!!!!!");
                                         client_list.get(i).onRestartActivity();
                                         System.out.println("ment : "+client_list.get(i).getsaveMent());
-                                        sendToSomeone(client_list.get(i).getsaveMent(),room_num,user_name);
+                                        sendToSomeone(client_list.get(i).getsaveMent(),room_num,user);
                                         client_list.get(i).resetsaveMent();
                                     }
                                 }
                                 check_get = true;
                             }
-                            System.out.println(room_num + " 번 방 ( " + user_name+" )  " + (j + 1) + " 번쨰 리스폰 중");
+                            System.out.println(room_num + " 번 방 ( " + user+" ) LINE =  "+ line +"       "+ (j + 1) + " 번쨰 리스폰 중");
                             Thread.sleep(3000);
 
                         }
                         if (still_connect == false){
-                            System.out.println(room_num + " 번 방 ( " + user_name + " ) 끊김");
+                            System.out.println(room_num + " 번 방 ( " + user+" ) LINE =  "+ line + " 끊김");
                             for (int i = 0; i < client_list.size(); i++) {
                                 if (client_list.get(i).getCheckEnterRoom().equals("1")){
                                     for (int j = 0; j < roomList.size(); j++) {
@@ -669,28 +681,27 @@ public class Server {
                                     }
                                 }
                             
-                                
                             }
                             for (int i = 0; i < client_list.size(); i++) {
-                                if (client_list.get(i).getUserName().equals(user_name) && client_list.get(i).getLine() == line) {
-                                    System.out.println(user_name + "의 line1 " + client_list.get(i).getLine() +"||"+ line);
-                                    exit_room(user_name,room_num);
+                                if (client_list.get(i).getUserName().equals(user) && client_list.get(i).getLine() == line) {
+                                    System.out.println(user + "의 line1 " + client_list.get(i).getLine() +"||"+ line);
+                                    exit_room(user,room_num);
                                     user_list = check_user_list(room_num);
                                     sendToAll("《2"+user_list+"《"+ "\n",room_num);
                                     
                                 }
                                 else {
-                                    System.out.println(user_name + "의 line2 " + client_list.get(i).getLine() +"||"+ line);
+                                    System.out.println(user + "의 line2 " + client_list.get(i).getLine() +"||"+ line);
                                 }
 
                             }
                             break_thread = true;
                             ServerThread.interrupted();
-                            System.out.println(user_name + "의 소켓 종료");
+                            System.out.println(user + "    LINE = " + line + "의 소켓 종료");
                             break;
                         }
                         else if (still_connect == true){
-                            System.out.println(room_num + " 번 방 ( " + user_name + " ) 연결 유지 됨" );
+                            System.out.println(room_num + " 번 방 ( " + user + " ) LINE = " + line +"연결 유지 됨" );
                             
                             still_connect = false;  
                             count = 3;
@@ -718,6 +729,7 @@ public class Server {
                             sendToAll("《8《" + time+"《"+"\n",room_num);
                         }
                         System.out.println(time);
+                        System.out.println(user_name + "\\\\ 이름~~~");
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -739,8 +751,9 @@ public class Server {
                         else {
                             System.out.println("이벤트 때문에 턴                        안    끝남");
                         }
-
+                        
                         System.out.println(time_break);
+                        
                     }
                     sendToAll("《8《65《"+"\n" ,room_num);
                     
