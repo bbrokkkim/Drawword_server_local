@@ -343,10 +343,29 @@ public class Server {
                             System.out.println(user_name);
                             exit_room(user_name,room_num);
                             user_list = check_user_list(room_num);
-                            System.out.println(user_list);
+                            System.out.println("유저 리스트트트틑 :" + user_list);
                             
                             sendToAll("《2"+user_list+"《"+ "\n",room_num);
+                            if (check_room_master.equals("2")){
+                                sendToSomeone("《6.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
+                                sendToExcept("《2.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
+                                
+                                sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
+                                timer.start(); 
+
+                                System.out.println("스타트!!!!!!!1 : " + room_num + " || type"+ check_room_master);
+                                
+                                javaDB.connect_db(room_num,1);
+                            }
+                            else if(check_room_master.equals("3")){
+                                System.out.println("레디");
+                                sendToAll("《2"+ user_list + "《" + "\n",room_num);
+                               
+                            }
+                            
+                            
                             exit_room_coonect_checker = false;
+                            
                             break;
                         }
                         /*else if (tcp_type.equals("11")) {
@@ -505,7 +524,7 @@ public class Server {
                 // System.out.println("비교 : " + room_num + "||" + client_list.get(i).getRoomNum());
                 if ( room_num.equals( client_list.get(i).getRoomNum() )){
                     if (client_list.get(i).statusActivity() == 1) {
-                        // System.out.println("방번호 : " + room_num);
+//                         System.out.println("방번호 : " + room_num);
                         clients.get(i).write(message);
                         // System.out.println( "메세지 : " + message);
 
@@ -776,7 +795,7 @@ public class Server {
                 while(true){
                     int socket_count = 0;
                     int time = 60;
-                    for (int i = 0; i < 60; i++) {
+                    for (int i = 0; i < 10; i++) {
                         disconnect_boolean = false;
                         if (i > 50){
                             sendToAll("《8《0" + time+"《"+"\n",room_num);    

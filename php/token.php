@@ -9,15 +9,16 @@
 	$choice = isset($_POST['choice']) ? $_POST['choice'] : "";
 	echo $user_iden;
 	echo $user_name;
-	// echo $token;
+	echo $token;
 	
+	//토큰 지우기
 	if ($choice == "2"){
 		$query = "delete from users where user_iden = '$user_iden'";
 		$result = mysqli_query($connect,$query)or die ("입력 실패");
 		echo $query;
 	}
 
-
+	//토큰 입력
 	else if (!$user_iden == ""){
 		$query = "select * from users where user_iden = '$user_iden'";
 		echo $query . "<br>";

@@ -33,7 +33,6 @@
 		$result = mysqli_query($connect,$query)or die ("입력 실패");
 		$row = mysqli_fetch_array($result);
 		$token = $row['Token'];
-		$token = 'f5iFpro8Ink:APA91bHVg1ohRD7uc9n7yYNeevGO3DH9sdnPas_QyFeo1QfWUOTUEAwSgRN-G3hLi1x4Gcbd_ucEiIX-mc-aqZqTd0e8UqKLLmVsBwidwB6eQfRzULHYzru7mj-6Ikp8coD6Zjxu1HCv';
 	/*	echo $query;
 		echo $token;
 		echo $room_num;
@@ -45,7 +44,6 @@
 	                    "type" => "2"
 	                    );
 
-		echo $message;
 		$send_nofi = send_notification($token,$message);
 		echo $send_nofi;
 		
