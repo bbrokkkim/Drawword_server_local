@@ -12,7 +12,7 @@ include_once ("config.php");
 		
 // 	}
 // 	
-	$room_n = "testroom";
+/*	$room_n = "testroom";
 	$room_name;
 	$date = "20";
  	for ($i = 1; $i < 100; $i++) {
@@ -21,7 +21,7 @@ include_once ("config.php");
 		echo $query;
 		$result = mysqli_query($connect,$query);
  		
- 	}
-	
+ 	}*/
+	echo "Adsfsadf";
 
  ?>

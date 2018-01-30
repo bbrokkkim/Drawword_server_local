@@ -30,7 +30,9 @@
 			$result = mysqli_query($connect,$query)or die ("입력 실패");
 		}
 		else {
-			$query = "update room_info set Token = '$token' where user_iden = '$user_iden'";
+			$query = "delete from where user_iden = '$user_iden'";
+			$result = mysqli_query($connect,$query)or die ("입력 실패");	
+			$query = "insert into users (Token, user_iden,user_name) values ('$token','$user_iden','$user_name')";
 			echo $query;
 			$result = mysqli_query($connect,$query)or die ("입력 실패");
 		}

@@ -16,7 +16,7 @@
 	$user_list = isset($_POST['user_list']) ? $_POST['user_list'] : "";
 	// $row = '{"invate_list":["kkk1","kkk2","kkk3","kkk3","kkk3","kkk5","kkk7"]}';
 	
-	echo "asdfasdf";
+	// echo "asdfasdf";
 	$list = json_decode($user_list,true);
 	$array = $list['invate_list'];
 	// var_dump($list);
