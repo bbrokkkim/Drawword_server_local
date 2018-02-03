@@ -722,50 +722,51 @@ public class Server {
                         }
                         //끊겼을떄
                         if (still_connect == false){
-                            System.out.println(room_num + " 번 방 ( " + user+" ) LINE =  "+ line + " 끊김");
+                            System.out.println(room_num + " 번 방 ( " + user+" ) LINE =  "+ line + " 끊김!");
+                            boolean check_waitroom = true;
                             boolean reconnectboolean = false;
-                            //잠시 끊긴건지 확인
-                            for (int j = 0; j < roomList.get(get).getSize(); j++) {
-
-                                System.out.println(roomList.get(get).getRoomLine(j) +" | |   | | "+ line );
-                                System.out.println(roomList.get(get).getRoomUser(j)+" | |   | | "+ user);
-                                //잠시끊겼던 것일떄
-                                if (roomList.get(get).getRoomUser(j).equals(user) && roomList.get(get).getRoomLine(j) != line) {
-                                    reconnectboolean = true;
-                                    System.out.println(roomList.get(get).getSize() + " 방 사이즈!1");
-                                    
-                                    roomList.get(get).delUser(user);
-                                    System.out.println(roomList.get(get).getSize() + " 방 사이즈!2");
+                            for (int i = 0; i < roomList.size(); i++) {
+                                System.out.println(roomList.size() + " 개");
+                                if (roomList.get(i).getRoomNum().equals(room_num)) {
+                                    System.out.println(roomList.size() + " 개!!!!!");
+                                    check_waitroom = false;
                                     break;
                                 }
-                                
                             }
-                          
-/*                            for (int j = 0; j < roomList.get(get).getSize(); j++) {          
-                                if (roomList.get(get).getRoomUser(j).equals(user) && roomList.get(get).getRoomLine(j) == line) {
+                            System.out.println(roomList.size() + " 개@@@@");
+                            
+                                //잠시 끊긴건지 확인 (게임중)
+                            if (check_waitroom == false) {
+                                for (int j = 0; j < roomList.get(get).getSize(); j++) {
+    
+                                    System.out.println(roomList.get(get).getRoomLine(j) +" | |   | | "+ line );
+                                    System.out.println(roomList.get(get).getRoomUser(j)+" | |   | | "+ user);
+                                    //잠시끊겼던 것일떄
+                                    if (roomList.get(get).getRoomUser(j).equals(user) && roomList.get(get).getRoomLine(j) != line) {
+                                        reconnectboolean = true;
+                                        System.out.println(roomList.get(get).getSize() + " 방 사이즈!1");
+                                        
+                                        roomList.get(get).delUser(user);
+                                        System.out.println(roomList.get(get).getSize() + " 방 사이즈!2");
+                                        break;
+                                    }
                                     
-                                    System.out.println(roomList.get(get).getSize() + " 방 사이즈!1");
-                                    
-                                    roomList.get(get).delUser(user);
-                                    System.out.println(roomList.get(get).getSize() + " 방 사이즈!2");
-                                    break;
                                 }
-                                
-                            }   
-*/                                
-                            if (!reconnectboolean) {
-                                //소켓 끊어졌다는걸 array로 명시
-                                //게임 시작 후 소켓 끊어진 유저 체크
-                                Thread.sleep(3000);
-                                roomList.get(get).addDisconnectUserList(user);
-                                roomList.get(get).delUser(user);
-                                System.out.println(roomList.get(get).getRoomNum() +"번 인원수 : "+ roomList.get(get).getRoomUserList());   
-                                System.out.println("소켓 끊긴 리스트 사이즈!!" + roomList.get(get).getDisconnectUserList().size());
+    
+                                if (!reconnectboolean) {
+                                    //소켓 끊어졌다는걸 array로 명시
+                                    //게임 시작 후 소켓 끊어진 유저 체크
+                                    Thread.sleep(3000);
+                                    roomList.get(get).addDisconnectUserList(user);
+                                    roomList.get(get).delUser(user);
+                                    System.out.println(roomList.get(get).getRoomNum() +"번 인원수 : "+ roomList.get(get).getRoomUserList());   
+                                    System.out.println("소켓 끊긴 리스트 사이즈!!" + roomList.get(get).getDisconnectUserList().size());
+                                }
+                                else { 
+                                    System.out.println("소켓이 끊겼다 다시 붙었다!!!");
+                                }
                             }
-                            else { 
-                                System.out.println("소켓이 끊겼다 다시 붙었다!!!");
-                            }
-                            //하트비트 교환시 소켓 끊겼다 가정 하여 list에서 제외
+                            //하트비트 교환시 소켓 끊겼다 가정 하여 list에서 제외 (게임중 대기중 둘다)
                             for (int i = 0; i < client_list.size(); i++) {
                                 if (client_list.get(i).getUserName().equals(user) && client_list.get(i).getLine() == line) {
                                     System.out.println(user + "의 line1 " + client_list.get(i).getLine() +"||"+ line);
