@@ -50,7 +50,7 @@
 			$query = "insert into friend_list (my_iden,my_id,friend_iden,friend_id,check_friend) values ('$user_iden','$user_id','$friend_iden','$friend_id','0')";
 			// echo $query . "    ||    ";
 			$result = mysqli_query($connect,$query);
-			$query = "select friend.my_iden, list.iden, list.id, list.photo_uri, list.ment from user_list as list join friend_list as friend ON friend.friend_iden = list.iden where my_iden = '$user_iden' order by list.id asc";
+			$query = "select friend.my_iden, list.iden, list.id, list.photo_uri, list.ment,list.rotate from user_list as list join friend_list as friend ON friend.friend_iden = list.iden where my_iden = '$user_iden' order by list.id asc";
 			// echo $query;
 			$result = mysqli_query($connect,$query);
 			$count = mysqli_num_rows($result);
@@ -73,7 +73,7 @@
 		$query = "delete from friend_list where my_iden = '$user_iden' and friend_iden = '$friend_iden'";
 		$result = mysqli_query($connect,$query);
 		// echo $query;
-		$query = "select friend.my_iden, list.iden, list.id, list.photo_uri, list.ment from user_list as list join friend_list as friend ON friend.friend_iden = list.iden where my_iden = '$user_iden' order by list.id asc";
+		$query = "select friend.my_iden, list.iden, list.id, list.photo_uri, list.ment, list.rotate from user_list as list join friend_list as friend ON friend.friend_iden = list.iden where my_iden = '$user_iden' order by list.id asc";
 		$result = mysqli_query($connect,$query);
 		
 		$count = mysqli_num_rows($result);

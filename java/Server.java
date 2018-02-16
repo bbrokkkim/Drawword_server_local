@@ -611,10 +611,13 @@ public class Server {
                 get_test = getRoomUserSize(room_num);
                 System.out.println("확인 : " + get_test);
                 System.out.println("모두 다");
+
+
+
                 for (int i = 0; i < client_list.size(); i++) {
                     if (room_num.equals( client_list.get(i).getRoomNum()) ){
                         roomList.get(get).addUser(client_list.get(i).getUserName(),client_list.get(i).getLine());
-                        client_list.get(get).enterGameroom();
+                        client_list.get(i).enterGameroom();
                     }
                 }
                 System.out.println("방번호 사이즈!!!!!" + roomList.get(get).getSize());
@@ -818,7 +821,7 @@ public class Server {
                 while(true){
                     int socket_count = 0;
                     int time = 60;
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 60; i++) {
                         disconnect_boolean = false;
                         if (i > 50){
                             sendToAll("《8《0" + time+"《"+"\n",room_num);    

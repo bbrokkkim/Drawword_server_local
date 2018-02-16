@@ -17,7 +17,7 @@
 
 	if ($pwd != $data['pwd'] || $data['pwd'] == "" ){
 		$user_table = array();
-		$test = array('iden' => "wrong" , 'id' => "wrong" , 'token' => "wrong" ,'photo_uri' => "wrong");
+		$test = array('iden' => "wrong" , 'id' => "wrong" , 'token' => "wrong" ,'photo_uri' => "wrong", 'rotate' => "wrong");
 		array_push($user_table,$test);		
 		$json = json_encode($user_table);
 		echo $json;
@@ -31,8 +31,11 @@
 		$_SESSION['id'] = $id;
 		$_SESSION['token'] = $token;
 		$user_table = array();
-
-		$test = array('iden' => $data['iden'], 'id' => $data['id'] , 'token' => $token, 'photo_uri' => $photo_uri);
+		$row_query = "select * from user_list where id = '$id'";
+		$row_result = mysqli_query($connect,$row_query);
+		$row = mysqli_fetch_array($row_result);
+		$rotate = $row['rotate'];	
+		$test = array('iden' => $data['iden'], 'id' => $data['id'] , 'token' => $token, 'photo_uri' => $photo_uri, 'rotate' => $rotate);
 		array_push($user_table, $test);
 		
 		$json = json_encode($user_table);

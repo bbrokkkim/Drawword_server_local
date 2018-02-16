@@ -8,13 +8,14 @@
 	$phone = isset($_POST['phone']) ? $_POST['phone'] : "";
 	$sex = isset($_POST['sex']) ? $_POST['sex'] : "";
 	$photo_uri = isset($_POST['photo_uri']) ? $_POST['photo_uri'] : "";
+	$rotate = isset($_POST['rotate']) ? $_POST['rotate'] : "";
 	$choice = $_POST['choice'];
 	$uri = $id.".jpg";
 
 
 
 	if ($sex == 'male') {
-		$int_sex = 1;
+		$int_sex = 1; 
 	}
 	else if ($sex == 'female'){
 		$int_sex = 2;
@@ -48,13 +49,13 @@
 			exit;	
 		}
 
-		$query = "insert into user_list(name,id,pwd,phone,sex,photo_uri) values ('$name','$id','$pwd','$phone',$int_sex,'$photo_uri')";
+		$query = "insert into user_list(name,id,pwd,phone,sex,photo_uri,rotate) values ('$name','$id','$pwd','$phone',$int_sex,'$photo_uri','$rotate')";
 		$result = mysqli_query($connect,$query)or die ("입력 실패");
 		$query = "select * from user_list where id  ='$id'";
 		$result = mysqli_query($connect,$query);
 		$row = mysqli_fetch_array($result);
 		$user_table = array();
-		$test = array('iden' => $row['iden'],'id' => $id,'token' => $token, 'photo_uri' => $photo_uri);
+		$test = array('iden' => $row['iden'],'id' => $id,'token' => $token, 'photo_uri' => $photo_uri, 'rotate' => $rotate);
 		array_push($user_table, $test);
 		$json = json_encode($user_table);
 		echo $json;
