@@ -35,6 +35,8 @@ public class Server {
             }
             server.close();
         } catch (Exception e) {
+            e.printStackTrace();
+                System.out.println(e);
             System.out.println("끊김~**************************************************");
         }
     }
@@ -80,6 +82,7 @@ public class Server {
         String y = "";
         String answercountList = "";
         String tagger_or_not = "";
+        String ans = "";
         int line;
         // String[4] info = 
         boolean still_connect = false;
@@ -238,10 +241,6 @@ public class Server {
                                 sendToSomeone("《6.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
                                 sendToExcept("《2.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
                                 
-                                /*roomList.get(get).setAnswer();
-                                answer = roomList.get(get).getAnswer();
-                                sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
-                                */sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
                                 timer.start(); 
 
                                 System.out.println("스타트!!!!!!!1 : " + room_num + " || type"+ check_room_master);
@@ -280,9 +279,8 @@ public class Server {
                             
                             //c쿼리에서 단어 빼내서 ex> "test"
                             // roomList.get(get).setAnswer();
-                            answer = roomList.get(get).getAnswer();
-                            System.out.println(answer+"");
-                            System.out.println("《6《"+room_num+"《"+user_name+"《"+answer+"《"+"  \\  " + user_name);
+                            System.out.println(roomList.get(get).getAnswer()+"");
+                            
                             // sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,user_name);
                             // sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,user_name);
                             // sendToAll("《8《65"+"\n" ,room_num);
@@ -291,15 +289,22 @@ public class Server {
 
                         //정답 시도
                         else if (tcp_type.equals("7")){
-                            answer = roomList.get(get).getAnswer();
+//                            answer = roomList.get(get).getAnswer();
                             idx = user_name.indexOf("《");
+                            System.out.println(roomList.get(get).getAnswer());
+                            System.out.println(roomList.get(get).getAnswer());
+                            System.out.println(roomList.get(get).getAnswer());
+                            System.out.println(roomList.get(get).getAnswer());
+                         
                             to = user_name.substring(0,idx);
                             content = user_name.substring(idx+1);
                             
 
                             // System.out.println("7");
                             cqlconnect.insert(room_num,to,content);
-                            if (answer.equals(content)){
+                            
+                            System.out.println(roomList.get(get).getRoomNum() + roomList.get(get).getRoomUserList());
+                            if (roomList.get(get).getAnswer().equals(content)){
                                 time_break = false;
                                 roomList.get(get).setTimeBreaker();
                                 System.out.println("right");
@@ -309,7 +314,12 @@ public class Server {
                                         roomList.get(i).setAnswerCount(to);
                                     }
                                 }
-                                sendToAll("《7.5《"+user_name+"《"+ answer + "\n",room_num);
+                                user_name = to;
+                                sendToAll("《7.5《"+to+"《"+ roomList.get(get).getAnswer() + "\n",room_num);
+                                System.out.println("《7.5《"+to+"《"+ roomList.get(get).getAnswer() );
+                                System.out.println("right || " + roomList.get(get).getAnswer()+ " " + room_num);
+//                                System.out.println(roomList.get(get).getAnswer());
+//                                System.out.println(user_name);
                                 /*for (int i = 0; i < roomList.get(get).getSize(); i++) {
                                     System.out.println("다음턴");
                                     //다음 턴
@@ -333,8 +343,8 @@ public class Server {
 
                                 
                             }
-                            else if (!answer.equals(content)){    
-                                System.out.println("wrong");
+                            else if (!roomList.get(get).getAnswer().equals(content)){    
+                                System.out.println("wrong || " + roomList.get(get).getAnswer()+ " " + room_num);
                                 sendToAll("《7《"+user_name+ "\n",room_num);
                             }
 
@@ -350,31 +360,40 @@ public class Server {
                             idx = user_name.indexOf("》");
                             user_name = user_name.substring(0,idx);
                             System.out.println(user_name);
+                            boolean check_gammroom_status = false;
+                            for (int j = 0; j < roomList.size(); j++) {
+                                if (room_num.equals(roomList.get(j).getRoomNum())) {
+                                    check_gammroom_status = roomList.get(get).getRoomstatus();
+                                }
+                            }
                             exit_room(user_name,room_num);
                             user_list = check_user_list(room_num);
                             System.out.println("유저 리스트트트틑 :" + user_list);
                             
-                            sendToAll("《2"+user_list+"《"+ "\n",room_num);
-                            if (check_room_master.equals("2")){
-                                sendToSomeone("《6.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
-                                sendToExcept("《2.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
+                            if (!check_gammroom_status) {
                                 
-                                sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
-                                timer.start(); 
-
-                                System.out.println("스타트!!!!!!!1 : " + room_num + " || type"+ check_room_master);
+                                sendToAll("《2"+user_list+"《"+ "\n",room_num);
+                                if (check_room_master.equals("2")){
+                                    sendToSomeone("《6.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
+                                    sendToExcept("《2.5"+ user_list + "《" + "\n", room_num, roomList.get(get).getRoomUser(0));
+                                    
+                                    sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
+                                    timer.start(); 
+    
+                                    System.out.println("스타트!!!!!!!1 : " + room_num + " || type"+ check_room_master);
+                                    
+                                    javaDB.connect_db(room_num,1);
+                                }
+                                else if(check_room_master.equals("3")){
+                                    System.out.println("레디");
+                                    sendToAll("《2"+ user_list + "《" + "\n",room_num);
+                                   
+                                }
                                 
-                                javaDB.connect_db(room_num,1);
+                                
+                                exit_room_coonect_checker = false;
+                                
                             }
-                            else if(check_room_master.equals("3")){
-                                System.out.println("레디");
-                                sendToAll("《2"+ user_list + "《" + "\n",room_num);
-                               
-                            }
-                            
-                            
-                            exit_room_coonect_checker = false;
-                            
                             break;
                         }
                         /*else if (tcp_type.equals("11")) {
@@ -493,6 +512,14 @@ public class Server {
                     client_list.remove(i);
                     clients.get(i).disconnect();
                     clients.remove(i);
+                }
+            }
+            for (int i = 0; i < roomList.size(); i++) {
+                if (room_num.equals(roomList.get(i).getRoomNum())) {
+                    if (roomList.get(i).getcompleteroom()) {
+                    roomList.remove(i);
+                    System.out.println("!!!@!@!!!!!!!!"+ room_num + "번 방이 사라짐!");
+                    }
                 }
             }
             for (int i =0 ;i < client_list.size() ; i ++) {
@@ -804,6 +831,8 @@ public class Server {
                         }
                     } catch (InterruptedException e) {
                             e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -815,8 +844,9 @@ public class Server {
                 String tagger = roomList.get(get).getRoomUser(0);
                 boolean disconnect_boolean = false;
                 roomList.get(get).setAnswer();
-                answer = roomList.get(get).getAnswer();
-                sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
+                ans = roomList.get(get).getAnswer();
+                sendToSomeone("《6《"+user_name+"《"+roomList.get(get).getAnswer()+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
+                System.out.println("《6《"+user_name+"《"+roomList.get(get).getAnswer()+"《"+"\n"+ "   "+room_num + "   "+ roomList.get(get).getRoomUser(0));
                 sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(0));
                 while(true){
                     int socket_count = 0;
@@ -829,15 +859,22 @@ public class Server {
                         else {
                             sendToAll("《8《" + time+"《"+"\n",room_num);
                         }
-//                        System.out.println(time);
-                        // System.out.println(user_name + "\\\\ 이름~~~");
                         try {
                             Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
+                        } 
+                        catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         time = time - 1;
+                        boolean room_status = false;
+                        for (int j = 0; j < roomList.size(); j++) {
+                            if (room_num.equals(roomList.get(j).getRoomNum())) {
+                                room_status = true;
+                            }
+                        }
+                        if (room_status == false) {
+                            break;
+                        }
                         disconnectUserList = roomList.get(get).getDisconnectUserList();
                         for (int j = 0; j < disconnectUserList.size(); j++) {
                             if (tagger.equals(disconnectUserList.get(j))) {
@@ -849,7 +886,6 @@ public class Server {
 //                                }
 //                                socket_count = socket_count + 1;
                             
-                                
                             }
                             System.out.println(disconnectUserList.get(j) + " |0| " + tagger);
                         }
@@ -861,7 +897,6 @@ public class Server {
 //                            System.out.println("이벤트 때문에 턴                                끝남");
                             /*roomList.get(get).setAnswer();
                             answer = roomList.get(get).getAnswer();
-                            sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,user_name);
                             sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,user_name);
                             timer.start();*/
                             sendToAll("《8《65《"+"\n" ,room_num);
@@ -872,6 +907,7 @@ public class Server {
                         }
                         if (roomList.get(get).getSize() < 2){
                             System.out.println("방에 혼자 남았습니다. 방을 종료 합니다.");
+                            roomList.get(get).setcompleteroom();
 /*                            exit_room_coonect_checker = false;
                             sendToAll("《15《"+tagger+"\n" ,room_num);*/
                             break;
@@ -891,6 +927,7 @@ public class Server {
                         System.out.println("방에 혼자 남았습니다. 방을 종료 합니다.");
                         exit_room_coonect_checker = false;
                         sendToAll("《15《"+tagger+"\n" ,room_num);
+                        roomList.get(get).setcompleteroom();
                         break;
                     }
 
@@ -905,7 +942,7 @@ public class Server {
                         if (roomList.get(get).getRoomturn(i).equals("2")) {
                             // System.out.println(roomList.get(get).getRoomUser(i));
                             roomList.get(get).getRoomturnModify(i);
-                            System.out.println(i);
+                            // System.out.println(i);
                             System.out.println(roomList.get(get).getRoomUser(i)+" dddddd :   "+roomList.get(get).getRoomturn(i));
                             // sendToSomeone("《6.5《"+"\n", room_num, roomList.get(get).getRoomUser(i));
                             
@@ -913,10 +950,28 @@ public class Server {
                             sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,user_name);*/
                             // timer.start();
                             
-                            roomList.get(get).setAnswer();
-                            answer = roomList.get(get).getAnswer();
-                            sendToSomeone("《6《"+user_name+"《"+answer+"《"+"\n",room_num,roomList.get(get).getRoomUser(i));
+                            // roomList.get(get).setAnswer();
+                            
+//                            answer = roomList.get(get).getAnswer();
+//                            roomList.get(get).setAnswer();
+                            ans = roomList.get(get).getAnswer();
+                            System.out.println(roomList.get(get).getAnswer()+ "이 답이다");
+                            System.out.println(ans + "이것도 답이다");
+                            
+/*                            sendToSomeone("《6《"+user_name+"《"+roomList.get(get).getAnswer()+"《"+"\n",room_num,roomList.get(get).getRoomUser(i));
+                            System.out.println(user_name);
+                            
+                            System.out.println(roomList.get(get).getAnswer());
+                            System.out.println("《6111111111111111111111111《"+user_name+"《"+roomList.get(get).getAnswer()+"《"+ "   "+room_num + "   "+ roomList.get(get).getRoomUser(0));
                             sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(i));
+*/
+
+                            roomList.get(get).setAnswer();
+                            ans = roomList.get(get).getAnswer();
+                            sendToSomeone("《6《"+user_name+"《"+roomList.get(get).getAnswer() +"《"+"\n",room_num,roomList.get(get).getRoomUser(i));
+                            System.out.println("《611221122《"+user_name+"《"+roomList.get(get).getAnswer()+"《"+"   "+room_num + "   "+ roomList.get(get).getRoomUser(i));
+                            sendToExcept("《6.1《"+user_name+"《"+"\n",room_num,roomList.get(get).getRoomUser(i));
+                            
                             
                             //sendToExcept("《6.5《"+"\n", room_num, roomList.get(get).getRoomUser(i));
                             System.out.println("아이디dldldldld : " + roomList.get(get).getRoomUser(i));    
@@ -929,11 +984,15 @@ public class Server {
                         System.out.println("끝!!!!!!!!!!!!111" );
                         answercountList = roomList.get(get).getAnwserCountList();
                         sendToAll("《0《" + answercountList+"\n", room_num);
+                        check_room_master = "10";
+                        roomList.get(get).setRoomstatus();
+                        roomList.get(get).setcompleteroom();
                         System.out.println("끝 : " + answercountList);
                         break;
                     }
-                    //게임 끝
+                    //게임 아직 안 끝남
                     else if (next == false){
+                        // roomList.get(get).setAnswer();
                         System.out.println("아직 안끝낫다~ ");
                         continue;
                     }
@@ -959,6 +1018,8 @@ public class Server {
         String room_num;
         String status = "2";
         boolean time_break = true;
+        boolean room_break = false;
+        boolean completeroom = false;
         RoomInfo(String room_num){
             this.room_num = room_num;
             room_user_list = new ArrayList<>();
@@ -998,6 +1059,19 @@ public class Server {
                     disconnect_userList.remove(i);
                 }
             }
+        }
+        
+        public void setcompleteroom() {
+            completeroom = true;
+        }
+        public boolean getcompleteroom() {
+            return completeroom;
+        }
+        public void setRoomstatus() {
+            room_break = true;
+        }
+        public boolean getRoomstatus() {
+            return room_break;
         }
         public ArrayList<String> getDisconnectUserList(){
             return disconnect_userList;

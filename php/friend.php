@@ -10,7 +10,7 @@
 	$token = isset($_POST['token']) ? $_POST['token'] : "";
 
 	if ($choice == 1){
-		$query = "select friend.my_iden, list.iden, list.id, list.photo_uri, list.ment from user_list as list join friend_list as friend ON friend.friend_iden = list.iden where my_iden = '$user_iden'";
+		$query = "select friend.my_iden, list.iden, list.id, list.photo_uri, list.ment,list.rotate from user_list as list join friend_list as friend ON friend.friend_iden = list.iden where my_iden = '$user_iden'";
 /*		echo $query;
 		*/
 	

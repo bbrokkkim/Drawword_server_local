@@ -7,9 +7,7 @@
 		$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : "";
 		$room_name = isset($_POST['room_name']) ? $_POST['room_name'] : "";
 		$limit = isset($_POST['limit']) ? $_POST['limit'] : "";
-		if ( $room_name == ""){
-			$room_name = "재밌는 게임 해요!";
-		}
+
 
 
 		
